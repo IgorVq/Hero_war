@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { buildCombatStats, computeDamage } from '../utils/battleRules'
 
+const STORAGE_KEY = 'hero_war_best_heroes_v1'
+
 export const useBattleStore = defineStore('battle', {
   state: () => ({
     heroA: null,
@@ -13,11 +15,78 @@ export const useBattleStore = defineStore('battle', {
     currentTurn: 'heroA',
     battleLog: [],
     winner: null,
+    winsByHeroId: {},
+    heroesById: {},
   }),
   getters: {
     canLaunchDuel: (state) => Boolean(state.heroA && state.heroB),
+    bestHeroesRanking: (state) =>
+      Object.entries(state.winsByHeroId)
+        .map(([id, wins]) => {
+          const hero = state.heroesById[id]
+          if (!hero) return null
+
+          return {
+            ...hero,
+            wins,
+          }
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.wins - a.wins || a.name.localeCompare(b.name)),
   },
   actions: {
+    hydrateBestHeroes() {
+      if (typeof window === 'undefined') return
+
+      try {
+        const raw = window.localStorage.getItem(STORAGE_KEY)
+        if (!raw) return
+
+        const parsed = JSON.parse(raw)
+        const wins = parsed?.winsByHeroId
+        const heroes = parsed?.heroesById
+
+        if (wins && typeof wins === 'object') {
+          this.winsByHeroId = wins
+        }
+
+        if (heroes && typeof heroes === 'object') {
+          this.heroesById = heroes
+        }
+      } catch {
+        this.winsByHeroId = {}
+        this.heroesById = {}
+      }
+    },
+    persistBestHeroes() {
+      if (typeof window === 'undefined') return
+
+      const payload = JSON.stringify({
+        winsByHeroId: this.winsByHeroId,
+        heroesById: this.heroesById,
+      })
+      window.localStorage.setItem(STORAGE_KEY, payload)
+    },
+    registerHeroForRanking(hero) {
+      if (!hero?.id) return
+
+      const key = String(hero.id)
+      this.heroesById[key] = {
+        id: hero.id,
+        name: hero.name || 'Hero inconnu',
+        imageUrl: hero?.image?.url || '',
+        publisher: hero?.biography?.publisher || 'Univers inconnu',
+      }
+      this.persistBestHeroes()
+    },
+    recordWinForHero(hero) {
+      if (!hero?.id) return
+
+      const key = String(hero.id)
+      this.registerHeroForRanking(hero)
+      this.winsByHeroId[key] = (this.winsByHeroId[key] || 0) + 1
+      this.persistBestHeroes()
+    },
     clearBattleRuntime() {
       this.heroAStats = null
       this.heroBStats = null
@@ -30,14 +99,18 @@ export const useBattleStore = defineStore('battle', {
     setHeroes(heroA, heroB) {
       this.heroA = heroA
       this.heroB = heroB
+      this.registerHeroForRanking(heroA)
+      this.registerHeroForRanking(heroB)
       this.clearBattleRuntime()
     },
     setHeroA(hero) {
       this.heroA = hero
+      this.registerHeroForRanking(hero)
       this.clearBattleRuntime()
     },
     setHeroB(hero) {
       this.heroB = hero
+      this.registerHeroForRanking(hero)
       this.clearBattleRuntime()
     },
     clearHeroA() {
@@ -63,6 +136,7 @@ export const useBattleStore = defineStore('battle', {
         if (this.heroA?.id === hero.id) this.heroA = null
       }
 
+      this.registerHeroForRanking(hero)
       this.clearBattleRuntime()
     },
     assignHeroToActiveSlot(hero) {
@@ -123,6 +197,7 @@ export const useBattleStore = defineStore('battle', {
 
       if (defenderHpAfter <= 0) {
         this.winner = attackerKey
+        this.recordWinForHero(attacker)
         this.battleLog.push(`Victoire de ${attacker.name} !`)
         return
       }

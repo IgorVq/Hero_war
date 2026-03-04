@@ -1,5 +1,13 @@
 <script setup>
+import { onMounted } from 'vue'
 import AppNav from './components/AppNav.vue'
+import { useBattleStore } from './stores/battle'
+
+const battleStore = useBattleStore()
+
+onMounted(() => {
+  battleStore.hydrateBestHeroes()
+})
 </script>
 
 <template>
