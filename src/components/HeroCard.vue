@@ -7,7 +7,16 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  selectable: {
+    type: Boolean,
+    default: false,
+  },
+  selectedSlot: {
+    type: String,
+    default: '',
+  },
 })
+const emit = defineEmits(['select'])
 
 const combatStats = computed(() => {
   if (!props.hero?.powerstats) return null
@@ -16,10 +25,17 @@ const combatStats = computed(() => {
 </script>
 
 <template>
-  <article class="hero-card">
+  <article
+    class="hero-card"
+    :class="{ selectable, selected: Boolean(selectedSlot) }"
+    @click="selectable && emit('select', hero)"
+  >
     <p v-if="!hero">Aucun hero</p>
     <template v-else>
-      <h3 class="hero-name">{{ hero.name }}</h3>
+      <header class="hero-header">
+        <h3 class="hero-name">{{ hero.name }}</h3>
+        <span v-if="selectedSlot" class="selected-badge">{{ selectedSlot }}</span>
+      </header>
       <img
         v-if="hero?.image?.url"
         :src="hero.image.url"
@@ -93,14 +109,34 @@ const combatStats = computed(() => {
 
 <style scoped>
 .hero-card {
-  border: 1px solid #d7d7d7;
+  border: 1px solid var(--line);
   padding: 0.9rem;
-  border-radius: 12px;
-  background: #fff;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffefb, #fffdfa);
+  box-shadow: 0 8px 22px rgba(28, 20, 8, 0.05);
+}
+
+.hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .hero-name {
-  margin: 0 0 0.75rem;
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.selected-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--ink);
+  color: #fff;
 }
 
 img {
@@ -108,11 +144,12 @@ img {
   height: 240px;
   object-fit: cover;
   border-radius: 10px;
+  border: 1px solid #dfd7ca;
 }
 
 .full-name {
   margin: 0.85rem 0 0.2rem;
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   line-height: 1.2;
 }
 
@@ -122,14 +159,14 @@ img {
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
   font-size: 0.85rem;
-  background: #f1f3f5;
-  color: #374151;
+  background: #f3eee3;
+  color: #4f473a;
 }
 
 .stats {
   margin-top: 0.9rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #ececec;
+  border-top: 1px solid #e9e1d5;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.45rem;
@@ -141,9 +178,9 @@ img {
   align-items: center;
   gap: 0.35rem;
   padding: 0.45rem 0.25rem;
-  border-radius: 8px;
-  background: #f8fafc;
-  color: #1f2937;
+  border-radius: 10px;
+  background: #f5efe3;
+  color: #2a241b;
 }
 
 .stat-icon {
@@ -161,6 +198,23 @@ img {
 
 .stat-value {
   font-weight: 700;
+  font-size: 1.2rem;
   line-height: 1;
+}
+
+.selectable {
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+.selectable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(28, 20, 8, 0.12);
+  border-color: #c3ad83;
+}
+
+.selected {
+  border-color: var(--gold-deep);
+  box-shadow: 0 0 0 1px var(--gold-deep) inset;
 }
 </style>

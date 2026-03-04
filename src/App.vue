@@ -11,15 +11,14 @@ import AppNav from './components/AppNav.vue'
   </div>
 </template>
 
-<style scoped>
+<style>
 .app-shell {
-  max-width: 960px;
+  max-width: var(--app-max-width);
   margin: 0 auto;
-  padding: 1rem;
-  font-family: Arial, sans-serif;
+  padding: 0 var(--app-padding) var(--app-padding);
 }
 
 .page-content {
-  margin-top: 1rem;
+  margin-top: 1.15rem;
 }
 </style>

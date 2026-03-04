@@ -1,0 +1,46 @@
+:root {
+  --bg-base: #f6f4ef;
+  --bg-soft: #ece8df;
+  --panel: #fffdf9;
+  --text-main: #151515;
+  --text-muted: #5c5a56;
+  --line: #d9d3c7;
+  --gold: #b3915f;
+  --gold-deep: #8b6a3b;
+  --ink: #1b2330;
+  --app-max-width: 1700px;
+  --app-padding: 1.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text-main);
+  font-family: "Avenir Next", Avenir, "Trebuchet MS", "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%, #f8f3e9 0%, transparent 38%),
+    linear-gradient(180deg, var(--bg-base) 0%, #f2efe7 100%);
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 0;
+  font-family: "Palatino Linotype", Palatino, "Book Antiqua", serif;
+  letter-spacing: 0.02em;
+}
+
+button,
+input {
+  font: inherit;
+}
+

@@ -26,13 +26,32 @@ function onSubmit() {
 
 <style scoped>
 .search-form {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
 }
 
 input {
-  flex: 1;
-  padding: 0.5rem;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  background: var(--panel);
+}
+
+button {
+  border: 1px solid var(--gold-deep);
+  border-radius: 12px;
+  padding: 0.75rem 1.1rem;
+  background: linear-gradient(135deg, #cab188, var(--gold));
+  color: #171717;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 </style>
