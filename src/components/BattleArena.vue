@@ -47,14 +47,14 @@ function replayBattle() {
     </header>
 
     <section class="fighters">
-      <article class="fighter-card">
+      <article class="fighter-card" :class="{ defeated: heroACurrentHp <= 0 }">
         <h3>{{ heroA.name }}</h3>
         <img v-if="heroA?.image?.url" :src="heroA.image.url" :alt="heroA.name" />
         <div v-else class="image-fallback">Image indisponible</div>
         <HpBar :label="heroA.name" :current-hp="heroACurrentHp" :max-hp="heroAStats?.hpMax || 1" />
       </article>
 
-      <article class="fighter-card">
+      <article class="fighter-card" :class="{ defeated: heroBCurrentHp <= 0 }">
         <h3>{{ heroB.name }}</h3>
         <img v-if="heroB?.image?.url" :src="heroB.image.url" :alt="heroB.name" />
         <div v-else class="image-fallback">Image indisponible</div>
@@ -67,7 +67,9 @@ function replayBattle() {
       <button type="button" @click="replayBattle">Rejouer</button>
     </div>
 
-    <BattleLog :entries="battleLog" />
+    <div class="battle-log-wrap">
+      <BattleLog :entries="battleLog" />
+    </div>
   </section>
   <section v-else>
     <p>Aucun duel en cours. Retourne sur la page de selection.</p>
@@ -103,20 +105,25 @@ function replayBattle() {
 }
 
 .fighters {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.25rem;
 }
 
 .fighter-card {
-  width: 100%;
-  max-width: 350px;
+  width: min(44vw, 290px);
+  max-width: 290px;
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 0.8rem;
   background: linear-gradient(180deg, #fffefb, #fffdfa);
   box-shadow: 0 8px 22px rgba(28, 20, 8, 0.05);
-  justify-self: center;
+}
+
+.fighter-card.defeated {
+  filter: grayscale(1) saturate(0.3);
+  opacity: 0.65;
 }
 
 .fighter-card h3 {
@@ -146,6 +153,7 @@ function replayBattle() {
 .actions {
   display: flex;
   gap: 0.6rem;
+  justify-content: center;
 }
 
 .actions button {
@@ -161,9 +169,9 @@ function replayBattle() {
   cursor: not-allowed;
 }
 
-@media (max-width: 900px) {
-  .fighters {
-    grid-template-columns: 1fr;
-  }
+.battle-log-wrap {
+  width: min(760px, 92%);
+  margin: 0 auto;
 }
+
 </style>

@@ -1,7 +1,19 @@
 <script setup>
+import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 import HeroSearchForm from '../components/HeroSearchForm.vue'
 import HeroSelectionList from '../components/HeroSelectionList.vue'
 import SelectedHeroesPanel from '../components/SelectedHeroesPanel.vue'
+import { useHeroesStore } from '../stores/heroes'
+
+const heroesStore = useHeroesStore()
+const { hasSearched, results, isLoading } = storeToRefs(heroesStore)
+
+onMounted(() => {
+  if (!hasSearched.value && results.value.length === 0 && !isLoading.value) {
+    heroesStore.fetchRandomHeroes(12)
+  }
+})
 </script>
 
 <template>

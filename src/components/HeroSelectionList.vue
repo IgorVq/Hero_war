@@ -10,8 +10,8 @@ const battleStore = useBattleStore()
 const { heroA, heroB } = storeToRefs(battleStore)
 
 function getSelectedSlot(heroId) {
-  if (heroA.value?.id === heroId) return 'Hero A'
-  if (heroB.value?.id === heroId) return 'Hero B'
+  if (heroA.value?.id === heroId) return '1'
+  if (heroB.value?.id === heroId) return '2'
   return ''
 }
 </script>

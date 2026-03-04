@@ -119,9 +119,7 @@ export const useBattleStore = defineStore('battle', {
 
       const defenderHpAfter = defenderKey === 'heroA' ? this.heroACurrentHp : this.heroBCurrentHp
 
-      this.battleLog.push(
-        `${attacker.name} attaque ${defender.name} et inflige ${damage} degats. ${defender.name} a ${defenderHpAfter} HP restants.`,
-      )
+      this.battleLog.push(`${attacker.name} attaque ${defender.name} et inflige ${damage} degats.`)
 
       if (defenderHpAfter <= 0) {
         this.winner = attackerKey

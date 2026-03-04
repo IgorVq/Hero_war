@@ -35,5 +35,11 @@ export async function getHeroById(id) {
     throw new Error('Erreur API pendant la recuperation du hero')
   }
 
-  return response.json()
+  const data = await response.json()
+
+  if (data.response === 'error') {
+    throw new Error(data.error || 'Hero introuvable')
+  }
+
+  return data
 }

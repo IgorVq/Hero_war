@@ -24,7 +24,7 @@ const percent = computed(() => {
 
 <template>
   <div class="hp-wrap">
-    <p>{{ label }}: {{ currentHp }} / {{ maxHp }} HP</p>
+    <p class="hp-value">{{ currentHp }} / {{ maxHp }} HP</p>
     <div class="bar-bg">
       <div class="bar-fill" :style="{ width: `${percent}%` }"></div>
     </div>
@@ -40,6 +40,10 @@ p {
   margin: 0 0 0.35rem;
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+.hp-value {
+  text-align: right;
 }
 
 .bar-bg {

@@ -8,6 +8,10 @@ const query = ref('')
 function onSubmit() {
   heroesStore.searchHeroes(query.value)
 }
+
+function onRandom() {
+  heroesStore.fetchRandomHeroes(12)
+}
 </script>
 
 <template>
@@ -18,9 +22,14 @@ function onSubmit() {
       placeholder="Rechercher un hero"
       :disabled="heroesStore.isLoading"
     />
-    <button type="submit" :disabled="heroesStore.isLoading">
-      {{ heroesStore.isLoading ? 'Recherche...' : 'Rechercher' }}
-    </button>
+    <div class="actions">
+      <button type="submit" :disabled="heroesStore.isLoading">
+        {{ heroesStore.isLoading ? 'Recherche...' : 'Rechercher' }}
+      </button>
+      <button type="button" :disabled="heroesStore.isLoading" @click="onRandom">
+        Aleatoire
+      </button>
+    </div>
   </form>
 </template>
 
@@ -30,6 +39,11 @@ function onSubmit() {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.6rem;
   margin-bottom: 1.1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 input {
